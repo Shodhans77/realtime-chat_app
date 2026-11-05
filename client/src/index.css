@@ -62,6 +62,13 @@ body {
   margin-top: 6px;
 }
 
+.room-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.room-mode button { background: #22252f; color: #bbb; border: 1px solid #333; padding: 9px; border-radius: 8px; cursor: pointer; }
+.room-mode button.selected { color: #fff; border-color: #f97316; background: #382319; }
+.join-card button:disabled { opacity: .55; cursor: wait; }
+.connection-error { margin: 0; color: #fca5a5; font-size: 13px; }
+.invite-button { margin: 12px 0 18px; width: 100%; background: #f97316; color: #fff; border: 0; padding: 9px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+
 /* Chat layout */
 .chat-layout {
   display: flex;

@@ -31,7 +31,15 @@ io.on("connection", (socket) => {
   let currentRoom = null;
   let currentUser = null;
 
-  socket.on("join_room", ({ room, username }) => {
+  const enterRoom = ({ room, username }, create = false) => {
+    if (typeof room !== "string" || typeof username !== "string" || !room.trim() || !username.trim()) return;
+    room = room.trim().toLowerCase().replace(/\s+/g, "-").slice(0, 48);
+    username = username.trim().slice(0, 32);
+    if (create && rooms.has(room)) {
+      socket.emit("room_error", "That room name is already active. Choose another name or join it.");
+      return;
+    }
+    if (create) rooms.set(room, new Map());
     // leave previous room if any
     if (currentRoom) {
       socket.leave(currentRoom);
@@ -48,7 +56,10 @@ io.on("connection", (socket) => {
 
     socket.to(room).emit("system_message", `${username} joined the room.`);
     io.to(room).emit("user_list", getUsersInRoom(room));
-  });
+  };
+
+  socket.on("join_room", (details) => enterRoom(details));
+  socket.on("create_room", (details) => enterRoom(details, true));
 
   socket.on("send_message", ({ room, message, username }) => {
     io.to(room).emit("receive_message", {
